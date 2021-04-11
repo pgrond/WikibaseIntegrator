@@ -871,6 +871,12 @@ class ItemEngine(object):
                                 setattr(x, 'retain', '')
                         else:
                             setattr(x, 'remove', '')
+                    else:
+                        if stat.if_exists == 'DELETE':
+                            if stat.get_value() is None:
+                                setattr(x, 'remove', '')
+                            elif stat.get_value() == x.get_value():
+                                setattr(x, 'remove', '')
 
                 match = []
                 for i in prop_data:
@@ -1484,7 +1490,7 @@ class BaseDataType(object):
         :param check_qualifier_equality: When comparing two objects, test if qualifiers are equals between them. Default to true.
         :type check_qualifier_equality: boolean
         :param if_exists: Replace or append the statement. You can force an append if the statement already exists.
-        :type if_exists: A string of one of three allowed values: 'REPLACE', 'APPEND', 'FORCE_APPEND', 'KEEP'
+        :type if_exists: A string of one of three allowed values: 'REPLACE', 'APPEND', 'FORCE_APPEND', 'KEEP', 'DELETE'
         :return:
         """
 
@@ -1545,7 +1551,7 @@ class BaseDataType(object):
         if self.snak_type not in ['value', 'novalue', 'somevalue']:
             raise ValueError('{} is not a valid snak type'.format(self.snak_type))
 
-        if self.if_exists not in ['REPLACE', 'APPEND', 'FORCE_APPEND', 'KEEP']:
+        if self.if_exists not in ['REPLACE', 'APPEND', 'FORCE_APPEND', 'KEEP', 'DELETE']:
             raise ValueError('{} is not a valid if_exists value'.format(self.if_exists))
 
         if self.value is None and self.snak_type == 'value':
